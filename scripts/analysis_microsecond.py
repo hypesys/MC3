@@ -256,10 +256,10 @@ transmitter_values = [16777216] #536870912, 268435456, 134217728, 67108864, 3355
 receiver_values = [32000000] #64000000, 32000000, 16000000, 8000000, 4000000, 2000000
 
 # Time spent to switch from 0 to 1 or vice versa. This is an ideal channel capacity/channel bandwidth.
-time_switch_list = [10] # time_switch_list = [1000,500,250,125,100,50,25,16,8,4,2,1,0.5,0.25]
+time_switch_list = [50] # time_switch_list = [1000,500,250,125,100,50,25,16,8,4,2,1,0.5,0.25]
 
-#This value can stay as 0. This is early finish while creating contention (sleep ratio)
-sleep_time_values = [0]
+#This value can stay as 0 for this experiment. This is early finish while creating contention (sleep ratio). Alternative rates are given in the comments
+sleep_time_values = [0] # 0,0.025,0.05,0.075,0.1,0.15,0.2,0.25,0.3
 
 
 count = 0

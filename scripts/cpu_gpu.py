@@ -11,18 +11,18 @@ transmitter_values = [16777216] #536870912, 268435456, 134217728, 67108864, 3355
 receiver_values = [32000000] #64000000, 32000000, 16000000, 8000000, 4000000, 2000000
 
 # Time spent to switch from 0 to 1 or vice versa. This is an ideal channel capacity/channel bandwidth.
-time_switch_list = [10] # time_switch_list = [1000,500,250,125,100,50,25,16,8,4,2,1,0.5,0.25]
+time_switch_list = [50] # time_switch_list = [1000,500,250,125,100,50,25,16,8,4,2,1,0.5,0.25]
 
 #This value can stay as 0. This is early finish while creating contention (sleep ratio)
 sleep_time_values = [0]
 
-# Function to run receiver
+# Function to run receiver. We assign only first core to GPU execution 
 def run_receiver(receiver_size, receiver_iterations, log_dir, transmitter_size, time_switch, sleep_time):
     command = f"taskset -c 0 ~/cuda_samples/1_Utilities/bandwidthTest/bandwidthTest --start={receiver_size} --end={receiver_size} --increment={receiver_size} --mode=range --iteration=100000 > {log_dir}/time_switch{time_switch}_receiver{receiver_size}_transmitter{transmitter_size}.log"
     print(command)
     os.system(command)
 
-# Function to run transmitter. U data represent bit 01010101. So, for each U letter transmitter, we transmit switching 0s and 1s repetitively. Transmitter message can be updated to any message. Note that the analysis script might need an update if the conveyed message is modified.
+# Function to run transmitter. We assign the rest of the cores to CPU execution (1-11). 'U' data represent bit 01010101. So, for each U letter transmitter, we transmit switching 0s and 1s repetitively. Transmitter message can be updated to any message. Note that the analysis script might need an update if the conveyed message is modified.
 def run_transmitter(transmitter_size, log_dir, receiver_size, time_switch, sleep_time):
     command = f"taskset -c 1-11 ./build/transmitter copy 0 512 {transmitter_size} 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU' {time_switch} {sleep_time}  > {log_dir}/time_switch{time_switch}_transmitter{transmitter_size}_receiver{receiver_size}.log"
     print(command)
