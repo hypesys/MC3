@@ -19,8 +19,9 @@ python3 scripts/transmit_rate_experiment.py --log_dir=temp
 
 ```
 
-2. 
+2. Analyze the accuracy of transmitted message.
 
 ```bash
-python3 scripts/analysis.py --log_dir=temp --iteration_count=32 --calculateAccuracy=History --threshold=0.1
+# Update the log file. calculateAccuracy can be Average or History. Threshold can be adjusted the characteristics of data (buffer sizes of transmitter and receiver) 
+python3 scripts/analysis.py --log_dir=log  --calculateAccuracy=History --threshold=0.1
 ```

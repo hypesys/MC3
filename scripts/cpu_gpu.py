@@ -22,7 +22,7 @@ def run_receiver(receiver_size, receiver_iterations, log_dir, transmitter_size, 
     print(command)
     os.system(command)
 
-# Function to run transmitter
+# Function to run transmitter. U data represent bit 01010101. So, for each U letter transmitter, we transmit switching 0s and 1s repetitively. Transmitter message can be updated to any message. Note that the analysis script might need an update if the conveyed message is modified.
 def run_transmitter(transmitter_size, log_dir, receiver_size, time_switch, sleep_time):
     command = f"taskset -c 1-11 ./build/transmitter copy 0 512 {transmitter_size} 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU' {time_switch} {sleep_time}  > {log_dir}/time_switch{time_switch}_transmitter{transmitter_size}_receiver{receiver_size}.log"
     print(command)
@@ -45,13 +45,8 @@ if __name__ == "__main__":
             for time_switch in time_switch_list:
                 for sleep_time in sleep_time_values:
 
-                    
                     count += 1
-                    if count <= 0:
-                        print(count, time_switch)
-                        print(transmitter_size, receiver_size)
-                        continue
-                    # exit()
+
                     # Calculate the buffer size for the receiver
                     iteration = 80*390000 / 200 * time_switch / 2097152 * transmitter_size
 
@@ -59,8 +54,6 @@ if __name__ == "__main__":
                     receiver_thread = Thread(target=run_receiver, args=(receiver_size, iteration, args.log_dir, transmitter_size, time_switch, sleep_time))
                     receiver_thread.start()
 
-                    # Wait for 1 second before starting the transmitter
-                    # time.sleep(1)
 
                     # Start the transmitter
                     run_transmitter(transmitter_size, args.log_dir, receiver_size, time_switch, sleep_time)

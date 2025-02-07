@@ -5,8 +5,8 @@ import argparse
 
 
 #Transfer rate (switch from high to low or vice versa)
-time_switch_list = [1000,500,250,125,100,50,25,20,10,5]
-receiver_values = [104857600, 52428800, 26214400]
+time_switch_list = [1000,500,250,125,100,50,25,20]
+receiver_values = [13107200] # 104857600, 52428800, 26214400, 13107200, 6553600, 3276800, 1638400]#, 1433600, 1228800, 1024000, 819200, 716800, 614400, 512000, 409600, 204800
 
 
 # Function to run receiver
@@ -14,12 +14,10 @@ def run_receiver(receiver_size, receiver_iterations, receiver_buffer_size,log_di
     command = f"./build/receiver copy 0 {receiver_iterations} {receiver_buffer_size} {receiver_size} > {args.log_dir}/time_switch{time_switch}_receiver{receiver_size}_transmitter{transmitter_size}.log"
     os.system(command)
 
-# Function to run transmitter
+# Function to run transmitter. Modify the number of cores (taskset) if needed.
 def run_transmitter(transmitter_size,time_switch,receiver_size,log_dir):
     command = f"taskset -c 0-1 ./build/transmitter copy 0 0 {transmitter_size} 'UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU' {time_switch} > {log_dir}/time_switch{time_switch}_transmitter{transmitter_size}_receiver{receiver_size}_cores0-1.log"
     os.system(command)
-
-
 
 count  = 0 
 
@@ -41,7 +39,7 @@ for receiver_size in receiver_values:
 
 		# Iterate over the lists of values
 		transmitter_size = args.transmitter_size
-		# receiver_size = args.receiver_size
+		
 		# Calculate the buffer size  for the receiver
 		buffer_size = 16384 * (1073741824 / receiver_size * time_switch / 1000  )
 
